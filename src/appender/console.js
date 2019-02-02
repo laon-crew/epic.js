@@ -6,6 +6,10 @@
  *******************************************/
 
 
+/**
+ * consoleAppender
+ * Print message with proper stream in console
+ */ 
 
 function consoleAppender(stream, message) {
   if (stream === "log") {

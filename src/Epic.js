@@ -120,7 +120,6 @@ class Epic {
   }
 
 
-
   /**
    * _getOrigin
    * Gets the file path and line number of where the log came from
@@ -142,8 +141,8 @@ class Epic {
   _transform(elem) {
 
   }
-}
 
+}
 
 
 /**
