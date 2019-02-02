@@ -59,3 +59,9 @@ typings/
 
 # next.js build output
 .next
+
+# lannstark personal test directory
+lannstark_test/
+
+# vim swp files
+*/**/*.swp

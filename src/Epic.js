@@ -1,9 +1,28 @@
-/**
+/*******************************************
  * Epic
  * Logging module
- */
+ * @author   lannstark, jidan
+ * @director jun
+ *******************************************/
 
-const DEFAULT_SEVERITY_LEVELS = ["error", "warning", "info", "debug", "verbose"]
+"use strict"
+
+
+/**
+ * Default settings
+ */ 
+
+const DEFAULT_SEVERITY = {
+  "error": "error",
+  "warning": "warn",
+  "info": "log",
+  "debug": "log",
+  "verbose": "log"
+}
+
+const DEFAULT_APPENDER = "console"
+
+const SUPPORT_APPENDER = ["console"]
 
 
 /**
@@ -13,23 +32,93 @@ const DEFAULT_SEVERITY_LEVELS = ["error", "warning", "info", "debug", "verbose"]
  */
 
 class Epic {
-  constructor() {
+
+
+  /**
+   * constructor
+   * @param {object} options
+   */
+
+  constructor(options) {
+    const _options = typeof options === "undefined" ? {} : options
     this._severities = {}
-    this._transforms = []
-    this.setSeverities(DEFAULT_SEVERITY_LEVELS)
+    this._appender = ""
+
+    // Set severities
+    if (_options.hasOwnProperty("severity")) {
+      this._severities = options["severity"]
+    } else {
+      this._severities = DEFAULT_SEVERITY 
+    }
+
+    // Set appender
+    if (_options.hasOwnProperty("appender")) {
+      this._appender = options["appender"]
+    } else {
+      this._appender = DEFAULT_APPENDER
+    }
+
+    this._setSeverities()
+    this._setAppender()
   }
 
 
   /**
-   * setSeverities
+   * _setSeverities
    * Sets the severity level names and indexes from the given levels array
    * and creates logging functions for each level name with corresponding name
    * @params {String[]} levels Array of names for each severity level
    */
 
-  setSeverities(levels) {
+  _setSeverities() {
+    // Create log functions corresponding to severity levels
+    const severities = Object.keys(this._severities)
+    const self = this
+    severities.forEach((severity) => {
+      
+      /**
+       * @param {String} msg
+       * TODO  : Allow only string now, but be updated to allow others
+       */
 
+      this[severity] = function(msg) {
+        // Add stacktrace
+        const args = [severity, self._severities[severity], msg]
+        self.log.apply(self, args)
+      }
+    })
   }
+
+
+  /**
+   * setAppender
+   * Sets the appender
+   */
+  
+  _setAppender() {
+    // Create appender
+    if (SUPPORT_APPENDER.includes(this._appender) === false) {
+      throw `Not supported Appender, ${this_appender}`
+    }
+    this["appender"] = require(`./appender/${this._appender}`)
+  }
+
+
+  /**
+   * log
+   * Connect the message to the formatter,
+   * and pass the message to the appender
+   * @param {String} severity
+   * @param {String} stream
+   * @param {String} msg
+   */ 
+  
+  log(severity, stream, msg) {
+    // TODO: formatting
+    const message = msg
+    this["appender"](stream, message)
+  }
+
 
 
   /**
@@ -54,3 +143,11 @@ class Epic {
 
   }
 }
+
+
+
+/**
+ * Export module
+ */ 
+
+module.exports = Epic
