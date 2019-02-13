@@ -22,7 +22,8 @@ const DEFAULT_SEVERITY = {
 
 const DEFAULT_APPENDER = "console"
 
-const SUPPORT_APPENDER = ["console"]
+const SUPPORTED_APPENDER = ["console"]
+const SUPPORTED_STREAM = ["log", "warn", "error"]
 
 
 /**
@@ -46,6 +47,11 @@ class Epic {
 
     // Set severities
     if (_options.hasOwnProperty("severity")) {
+      for (let stream of Object.values(options["severity"])) {
+        if (SUPPORTED_STREAM.includes(stream) == false) {
+          throw "NOT SUPPORTED STREAM"
+        }
+      }
       this._severities = options["severity"]
     } else {
       this._severities = DEFAULT_SEVERITY 
@@ -60,6 +66,9 @@ class Epic {
 
     this._setSeverities()
     this._setAppender()
+
+    // Freeze this object
+    Object.freeze(this)
   }
 
 
@@ -97,7 +106,7 @@ class Epic {
   
   _setAppender() {
     // Create appender
-    if (SUPPORT_APPENDER.includes(this._appender) === false) {
+    if (SUPPORTED_APPENDER.includes(this._appender) === false) {
       throw `Not supported Appender, ${this_appender}`
     }
     this["appender"] = require(`./appender/${this._appender}`)
