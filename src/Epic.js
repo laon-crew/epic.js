@@ -41,25 +41,25 @@ class Epic {
    */
 
   constructor(options) {
-    const _options = typeof options === "undefined" ? {} : options
+    const _options = options || {}
     this._severities = {}
     this._appender = ""
 
     // Set severities
     if (_options.hasOwnProperty("severity")) {
-      for (let stream of Object.values(options["severity"])) {
+      for (let stream of Object.values(options.severity)) {
         if (SUPPORTED_STREAM.includes(stream) == false) {
           throw "NOT SUPPORTED STREAM"
         }
       }
-      this._severities = options["severity"]
+      this._severities = options.severity
     } else {
       this._severities = DEFAULT_SEVERITY 
     }
 
     // Set appender
     if (_options.hasOwnProperty("appender")) {
-      this._appender = options["appender"]
+      this._appender = options.appender
     } else {
       this._appender = DEFAULT_APPENDER
     }
@@ -109,7 +109,7 @@ class Epic {
     if (SUPPORTED_APPENDER.includes(this._appender) === false) {
       throw `Not supported Appender, ${this_appender}`
     }
-    this["appender"] = require(`./appender/${this._appender}`)
+    this.appender = require(`./appender/${this._appender}`)
   }
 
 
@@ -125,7 +125,7 @@ class Epic {
   log(severity, stream, msg) {
     // TODO: formatting
     const message = msg
-    this["appender"](stream, message)
+    this.appender(stream, message)
   }
 
 
