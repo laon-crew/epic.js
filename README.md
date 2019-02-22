@@ -1,3 +1,5 @@
+# README
+
 # epic.js
 
 Simple, fast, lightweight and epic logging module for node.js
@@ -21,6 +23,40 @@ log.warn("WARN!") // WARN with console.warn
 log.error("ERROR!") // ERROR with console.error
 ```
 
+### Formatter Options
+With Epic, you can create your own formatter of any format.
+You can follow the rules below.
+#### Order
+What is order?
+Order is 
+
+Default order: ["date", "severity", "message"]
+#### Date Format
+What is date format?
+Date format is 
+
+year: "%y"
+month: "%m"
+date: "%d"
+hours: "%H"
+minutes: "%M"
+seconds: "%S"
+milliseconds: "%s"
+
+Default date format: "%y-%m-%d %H:%M:%S:%s"
+
+#### Separator
+What is separator?
+Separator is
+
+Default separator: " "
+
+#### Content Key
+What is content key?
+Content key is
+
+Default
+
 ### Configuration customizing
 
 ```javascript=
@@ -31,7 +67,16 @@ const epicOption = {
   "severity" : {
     "tiger": "log",
     "lion" : "error"
-  }
+  },
+  "formatterOptions" : {
+    "dateKey": "WHEN?",
+    "messageKey": "WHAT?",
+    "severityKey": "IMPORTANT??",
+    "dateFormat": "year:%y, month:%m, date:%d %H:%M:%S",
+    "separator": " / ",
+    "order": ["message", "date", "severity"]
+
+  },
 }
 
 const log = new epic(epicOption)

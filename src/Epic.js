@@ -1,11 +1,18 @@
 /*******************************************
  * Epic
  * Logging module
- * @author   lannstark, jidan
+ * @author   lannstark, jidan, jeonha
  * @director jun
  *******************************************/
 
 "use strict"
+
+
+/**
+ * import Utils
+ */
+
+const utils = require("./Utils")
 
 
 /**
@@ -21,6 +28,8 @@ const DEFAULT_SEVERITY = {
 }
 
 const DEFAULT_APPENDER = "console"
+const DEFAULT_FORMATTER = "default"
+const DEFAULT_ORDER = ["date", "severity", "message"]
 
 const SUPPORTED_APPENDER = ["console"]
 const SUPPORTED_STREAM = ["log", "warn", "error"]
@@ -44,6 +53,7 @@ class Epic {
     const _options = options || {}
     this._severities = {}
     this._appender = ""
+    this._formatter = ""
 
     // Set severities
     if (_options.hasOwnProperty("severity")) {
@@ -64,8 +74,16 @@ class Epic {
       this._appender = DEFAULT_APPENDER
     }
 
+    // Set formatter options
+    let formatterOptions = _options.formatterOptions || {}
+    if (formatterOptions.hasOwnProperty("order") == false || Array.isArray(formatterOptions.order) == false) {
+      formatterOptions.order = DEFAULT_ORDER
+    }
+    formatterOptions.order = utils.formatterOptionsSetting(formatterOptions)
+
     this._setSeverities()
     this._setAppender()
+    this._setFormatter(formatterOptions)
 
     // Freeze this object
     Object.freeze(this)
@@ -84,7 +102,8 @@ class Epic {
     const severities = Object.keys(this._severities)
     const self = this
     severities.forEach((severity) => {
-      
+
+
       /**
        * @param {String} msg
        * TODO  : Allow only string now, but be updated to allow others
@@ -100,7 +119,7 @@ class Epic {
 
 
   /**
-   * setAppender
+   * _setAppender
    * Sets the appender
    */
   
@@ -114,6 +133,17 @@ class Epic {
 
 
   /**
+   * _setFormatter
+   * Sets formatter
+   */
+
+  _setFormatter(options) {
+    let formatter = require("./formatters/" + DEFAULT_FORMATTER)
+    this._formatter = formatter.bind(formatter, options)
+  }
+
+
+  /**
    * log
    * Connect the message to the formatter,
    * and pass the message to the appender
@@ -123,8 +153,7 @@ class Epic {
    */ 
   
   log(severity, stream, msg) {
-    // TODO: formatting
-    const message = msg
+    const message = this._formatter(severity, new Date(), msg)
     this.appender(stream, message)
   }
 
