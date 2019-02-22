@@ -1,5 +1,3 @@
-# README
-
 # epic.js
 
 Simple, fast, lightweight and epic logging module for node.js
