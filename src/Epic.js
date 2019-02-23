@@ -24,10 +24,6 @@ const DEFAULT_APPENDER = "console"
 
 const SUPPORTED_APPENDER = ["console"]
 const SUPPORTED_STREAM = ["log", "warn", "error"]
-const UNKNOWN_ORIGIN = {
-  "file": "Unknown file",
-  "line": "Unknown line"
-}
 
 
 /**
@@ -128,7 +124,7 @@ class Epic {
   
   log(severity, stream, msg) {
     // TODO: formatting
-    const { file, line } = this._getOrigin() || UNKNOWN_ORIGIN
+    const { file, line } = this._getOrigin()
     const message = `[${file}:${line}] ${msg}`
     this.appender(stream, message)
   }
@@ -166,10 +162,9 @@ class Epic {
   _processStack(stack, epicFileName) {
     for (let index = stack.length - 1; index >= 0; index--) {
       if (stack[index].file === epicFileName) {
-        return stack[index+1] || null
+        return stack[index+1]
       }
     }
-    return null
   }
 
 
