@@ -24,6 +24,10 @@ const DEFAULT_APPENDER = "console"
 
 const SUPPORTED_APPENDER = ["console"]
 const SUPPORTED_STREAM = ["log", "warn", "error"]
+const UNKNOWN_ORIGIN = {
+  "file": "Unknown file",
+  "line": "Unknown line"
+}
 
 
 /**
@@ -124,7 +128,8 @@ class Epic {
   
   log(severity, stream, msg) {
     // TODO: formatting
-    const message = msg
+    const { file, line } = this._getOrigin() || UNKNOWN_ORIGIN
+    const message = `[${file}:${line}] ${msg}`
     this.appender(stream, message)
   }
 
@@ -132,11 +137,39 @@ class Epic {
   /**
    * _getOrigin
    * Gets the file path and line number of where the log came from
+   * using V8's JavaScript stack trace API
    * @private
    */
 
   _getOrigin() {
+    const latestPrepareStackTrace = Error.prepareStackTrace
+    Error.prepareStackTrace = (error, structuredStackTrace) => {
+      return structuredStackTrace.map((callSite) => {
+        return { file: callSite.getFileName(),
+                 line: callSite.getLineNumber().toString() }
+      })
+    }
+    const stack = (new Error()).stack
+    Error.prepareStackTrace = latestPrepareStackTrace
+    return this._processStack(stack, __filename)
+  }
 
+
+  /**
+   * _processStack
+   * Finds where in the stack Epic.js is called first
+   * @param {Array} stack List of 10 most recent 
+   *                filenames and line numbers in the stack trace
+   * @param {String} epicFilename 
+   */
+
+  _processStack(stack, epicFileName) {
+    for (let index = stack.length - 1; index >= 0; index--) {
+      if (stack[index].file === epicFileName) {
+        return stack[index+1] || null
+      }
+    }
+    return null
   }
 
 
@@ -148,7 +181,7 @@ class Epic {
    * @private
    */
   _transform(elem) {
-
+    
   }
 
 }
