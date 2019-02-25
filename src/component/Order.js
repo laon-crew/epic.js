@@ -75,3 +75,10 @@ class Order {
   }
 
 }
+
+
+/**
+ * Export module
+ */
+
+module.exports = Order

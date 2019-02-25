@@ -54,3 +54,10 @@ class Config {
   }
 
 }
+
+
+/**
+ * Export module
+ */
+
+module.exports = Config

@@ -8,9 +8,7 @@
 
 class Formatter {
 
-  constructor(config, order) {
-    this.config = config
-    this.order = order
+  constructor() {
     // TODO Do whatever needed
   }
 
@@ -43,3 +41,10 @@ class Formatter {
   }
 
 }
+
+
+/**
+ * Export module
+ */
+
+module.exports = Formatter

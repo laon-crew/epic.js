@@ -8,16 +8,16 @@
 "use strict"
 
 // TODO Configure module alias or set absolute path
-const Order = require("@order-module")
-const Config = require("@config-module")
-const Formatter = require("@formatter-module")
+const Order = require("./component/Order")
+const Config = require("./component/Config")
+const Formatter = require("./formatter/Formatter")
 
 class Epic {
 
   constructor() {
     this.order = new Order()
     this.config = new Config()
-    this.formatter = new Formatter(this.order, this.config)
+    this.formatter = new Formatter()
     // TODO Do whatever needed
   }
 
@@ -27,7 +27,10 @@ class Epic {
    */
 
   build() {
-    this.formatter.build()
+    // Create Forammter
+    this.formatter.build(this.order, this.config)
+
+    // TODO Create custom log methods here
   }
 
 
@@ -52,3 +55,10 @@ class Epic {
   }
 
 }
+
+
+/**
+ * Export module
+ */
+
+module.exports = Epic
